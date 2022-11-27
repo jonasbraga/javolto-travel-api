@@ -1,5 +1,3 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
 import * as AWS from "aws-sdk";
 import { Command } from "commander";
 import { paginatedRequest } from "../src/lambda/utils/pagination";

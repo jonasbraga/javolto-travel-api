@@ -1,8 +1,6 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
-import { Browser } from 'puppeteer-core';
-import { extractPageContentAndUrls } from './core';
-import { CrawlDestination, CrawlInput } from './types';
+import { Browser } from "puppeteer-core";
+import { extractPageContentAndUrls } from "./core";
+import { CrawlDestination, CrawlInput } from "./types";
 
 /**
  * A simple "local" web crawler which runs in a loop. This can be used to test any changes to the web crawler without
@@ -14,7 +12,7 @@ import { CrawlDestination, CrawlInput } from './types';
 export const crawl = async (
   browser: Browser,
   input: CrawlInput,
-  destination?: CrawlDestination,
+  destination?: CrawlDestination
 ) => {
   const pathQueue = [...input.startPaths];
   const seenPaths = new Set(pathQueue);
@@ -22,12 +20,16 @@ export const crawl = async (
   while (pathQueue.length > 0) {
     const path = pathQueue.pop()!;
     seenPaths.add(path);
-    console.log('Visiting', path);
+    console.log("Visiting", path);
 
-    const newPaths = await extractPageContentAndUrls(browser, {
-      ...input,
-      path,
-    }, destination);
+    const newPaths = await extractPageContentAndUrls(
+      browser,
+      {
+        ...input,
+        path,
+      },
+      destination
+    );
 
     pathQueue.push(...newPaths.filter((newPath) => !seenPaths.has(newPath)));
   }

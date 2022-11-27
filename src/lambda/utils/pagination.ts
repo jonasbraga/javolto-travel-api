@@ -1,5 +1,3 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
 /**
  * Call a paginated aws api
  * @param boundApiMethod the api method to call
@@ -12,13 +10,13 @@
  * @returns {Promise<any[]>} all results
  */
 export const paginatedRequest = async <Params>(
-  boundApiMethod: (params: Params) => ({ promise: () => Promise<any> }),
+  boundApiMethod: (params: Params) => { promise: () => Promise<any> },
   parameters: Params,
   resultListKey: string,
   nextTokenKey: string,
   nextTokenInputKey: string = nextTokenKey,
   pageConsumer: (resultPage: any[]) => Promise<void> = async () => {},
-  limit?: number,
+  limit?: number
 ): Promise<any[]> => {
   let token = undefined;
   const results = [];
@@ -47,10 +45,17 @@ export const paginatedRequest = async <Params>(
  * @returns {Promise<any[]>} all items
  */
 export const dynamodbPaginatedRequest = <Params>(
-  boundApiMethod: (params: Params) => ({ promise: () => Promise<any> }),
+  boundApiMethod: (params: Params) => { promise: () => Promise<any> },
   parameters: Params,
   pageConsumer: (resultPage: any[]) => Promise<void> = async () => {},
-  limit?: number,
-): Promise<any[]> => paginatedRequest(
-  boundApiMethod, parameters, 'Items', 'LastEvaluatedKey', 'ExclusiveStartKey', pageConsumer, limit
-);
+  limit?: number
+): Promise<any[]> =>
+  paginatedRequest(
+    boundApiMethod,
+    parameters,
+    "Items",
+    "LastEvaluatedKey",
+    "ExclusiveStartKey",
+    pageConsumer,
+    limit
+  );

@@ -1,6 +1,15 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
-import * as AWS from 'aws-sdk';
+import * as AWS from "aws-sdk";
+
+export interface SearchParams {
+  destination: string;
+  startDate: number;
+  endDate: number;
+  rooms: number;
+}
+
+export interface SearchWithUrl extends SearchParams {
+  url: string;
+}
 
 /**
  * Base configuration required for crawling
@@ -44,7 +53,7 @@ export interface CrawlPageInput extends CrawlConfig {
  * Destination parameters for storing crawled content
  */
 export interface CrawlDestination {
-  s3: AWS.S3,
+  s3: AWS.S3;
   s3BucketName: string;
   s3KeyPrefix: string;
 }
