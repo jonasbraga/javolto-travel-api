@@ -1,8 +1,8 @@
-//import * as AWS from "aws-sdk";
-//import { updateHistoryEntry } from "../utils/cacheTable";
-//import { CrawlContext } from "../crawler/types";
+import * as AWS from "aws-sdk";
+import { updateHistoryEntry } from "../utils/cacheTable";
+import { CrawlContext } from "../crawler/types";
 import axios from 'axios';
-//const sfn = new AWS.StepFunctions();
+const sfn = new AWS.StepFunctions();
 
 /**
  * Continue execution of the crawler in another step function execution
@@ -27,3 +27,4 @@ axios.request(options).then(function (response) {
 };
 
 hotelCrawl()
+

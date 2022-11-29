@@ -39,15 +39,13 @@ export const travelCrawl = async (search: SearchWithUrl) => {
   await page.type("#startDate", search.startDate.toString());
   await page.type("#endDate", search.endDate.toString());
 
-  await page.type("#startDate", search.startDate.toString());
-  await page.type("#endDate", search.endDate.toString());
-
   const searchButton = "#myBtn";
 
   // Wait for results
   await Promise.all([page.click(searchButton), page.waitForNavigation()]);
 
   // Get the results (at least 3)
+
   const resultsInput = await page.evaluate(
     'document.querySelector("#travelResults").value'
   );

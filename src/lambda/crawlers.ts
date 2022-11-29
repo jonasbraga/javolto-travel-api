@@ -50,9 +50,9 @@ export const vehicleCrawlHandler = async (event: any, context: any) => {
 export const toursCrawlHandler = async (event: any, context: any) => {
   console.log(event, context);
 
-  const { path, crawlContext } = event;
+  const { path } = event;
 
-  return await toursCrawl(path, crawlContext);
+  return await toursCrawl(path);
 };
 
 /**

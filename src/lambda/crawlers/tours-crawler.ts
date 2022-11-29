@@ -1,45 +1,65 @@
-import * as AWS from "aws-sdk";
-import { updateHistoryEntry } from "../utils/cacheTable";
-import { CrawlContext } from "../crawler/types";
-import { deleteContextTable } from "../utils/contextTable";
+import { initBrowser } from "../crawler/core";
+import { SearchParams, SearchWithUrl } from "../crawler/types";
+import { getCacheEntry, putCacheEntry } from "../utils/cacheTable";
 
-const kendra = new AWS.Kendra();
+const createSearchString = (searchInput: SearchParams) => {
+  const sanitizedDestination = searchInput.destination.trim().toLowerCase();
+  const sanitizedStartDate = searchInput.startDate;
+  const sanitizedEndDate = searchInput.endDate;
 
-export interface KendraDataSourceDetails {
-  indexId: string;
-  dataSourceId: string;
-}
+  return `${sanitizedDestination}-${sanitizedStartDate}-${sanitizedEndDate}`;
+};
 
-/**
- * This step is run at the end of our step function state machine, once all discovered urls have been visited.
- * Clear the context database and sync the kendra data source.
- */
-export const toursCrawl = async (
-  crawlContext: CrawlContext,
-  kendraDataSourceDetails?: KendraDataSourceDetails
-) => {
-  // Delete the context table as we have visited all urls in the queue
-  console.log("Deleting context table", crawlContext.contextTableName);
-  await deleteContextTable(crawlContext.contextTableName);
+export const toursCrawl = async (search: SearchWithUrl) => {
+  const searchString = createSearchString(search);
+  // Search in the cache database for the data
+  const cachedData = getCacheEntry(searchString);
 
-  // Update the end timestamp
-  console.log("Writing end timestamp to history table");
-  await updateHistoryEntry(crawlContext.crawlId, {
-    endTimestamp: new Date().toISOString(),
-  });
-
-  // If we're using kendra, trigger a sync for the kendra data source
-  if (kendraDataSourceDetails) {
-    console.log("Starting kendra sync job");
-    await kendra
-      .startDataSourceSyncJob({
-        IndexId: kendraDataSourceDetails.indexId,
-        Id: kendraDataSourceDetails.dataSourceId,
-      })
-      .promise();
+  // If it's cached, return, otherwise scrap the data
+  if (cachedData) {
+    return cachedData;
   }
 
-  console.log("Crawl complete!");
+  // Go to site URL
+  const browser = await initBrowser();
 
-  return {};
+  const page = await browser.newPage();
+
+  page.setDefaultNavigationTimeout(90_000);
+
+  await page.goto(search.url, {
+    waitUntil: "networkidle0",
+  });
+
+  // Search for the location
+  await page.type("#destinationInput", search.destination);
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+
+  await page.type("#startDate", search.startDate.toString());
+  await page.type("#endDate", search.endDate.toString());
+
+  const searchButton = "#myBtn";
+
+  // Wait for results
+  await Promise.all([page.click(searchButton), page.waitForNavigation()]);
+
+  // Get the results (at least 3)
+
+  const resultsInput = await page.evaluate(
+    'document.querySelector("#travelResults").value'
+  );
+  /* const html = await page.evaluate(
+    () => document.body.innerHTML
+  ); */
+
+  // Parse the data, json like
+
+  const parsedData = resultsInput;
+
+  // Store in the database, with search as key and ttl of 3h
+
+  await putCacheEntry(searchString, parsedData);
+
+  return parsedData;
 };
