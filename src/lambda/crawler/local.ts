@@ -22,14 +22,10 @@ export const crawl = async (
     seenPaths.add(path);
     console.log("Visiting", path);
 
-    const newPaths = await extractPageContentAndUrls(
-      browser,
-      {
-        ...input,
-        path,
-      },
-      destination
-    );
+    const newPaths = await extractPageContentAndUrls(browser, {
+      ...input,
+      path,
+    });
 
     pathQueue.push(...newPaths.filter((newPath) => !seenPaths.has(newPath)));
   }
