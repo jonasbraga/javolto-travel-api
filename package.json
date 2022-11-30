@@ -12,7 +12,10 @@
     "build": "npm run compile && ./bin/build-chrome-layer.sh",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "cdk:destroy": "cdk --profile jbAccount destroy '*' --require-approval never",
+    "precdk:deploy": "npm ci && npm run build",
+    "cdk:deploy": "cdk --profile jbAccount deploy '*' --require-approval never"
   },
   "devDependencies": {
     "@types/jest": "^28.1.3",
