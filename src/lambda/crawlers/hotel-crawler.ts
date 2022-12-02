@@ -1,8 +1,8 @@
 import { getCacheEntry, putCacheEntry } from "../utils/cacheTable";
 import { SearchParams } from "../crawler/types";
 import { getHotels, getBooking } from "./functions/fetchMethods";
-import {filterHotels , filterBookings} from "./functions/filterMethods"
-import {fixedCityIDs} from "./constants/index"
+import { filterHotels, filterBookings } from "./functions/filterMethods";
+import { fixedCityIDs } from "./constants/index";
 const createSearchString = (searchInput: SearchParams) => {
   const sanitizedDestination = searchInput.destination.trim().toLowerCase();
   const sanitizedStartDate = searchInput.startDate;
@@ -14,7 +14,11 @@ const createSearchString = (searchInput: SearchParams) => {
 /**
  * Continue execution of the crawler in another step function execution
  */
-export const hotelCrawl = async (city='Berlin',checkInDate='2023-04-01', checkOutDate='2023-04-12') => {
+export const hotelCrawl = async (
+  city = "Berlin",
+  checkInDate = "2023-04-01",
+  checkOutDate = "2023-04-12"
+) => {
   /*
   const searchString = createSearchString(search);
   // Search in the cache database for the data
@@ -25,31 +29,37 @@ export const hotelCrawl = async (city='Berlin',checkInDate='2023-04-01', checkOu
     return cachedData;
   }
   */
- 
+
   try {
-    
-    const cityID = fixedCityIDs[city]
-    const promiseArray = []
-    const counter = 3
-    let filteredBookings
-    const {hotels} = (await getHotels(cityID,checkInDate, checkOutDate)) as any;
+    const cityID = fixedCityIDs[city];
+    const promiseArray = [];
+    const counter = 3;
+    let filteredBookings;
+    const { hotels } = (await getHotels(
+      cityID,
+      checkInDate,
+      checkOutDate
+    )) as any;
     // console.log(response.hotels[0]);
 
-    const hotelList = filterHotels(hotels)
-    
-    for(let i = 0;i<counter;i++)
-    {
-      let bookingPromise = getBooking(hotelList[i],'2023-04-01','2023-04-12','1')
-      
-      promiseArray.push(bookingPromise)
+    const hotelList = filterHotels(hotels);
 
-      const bookingResponses = await Promise.all(promiseArray)
+    for (let i = 0; i < counter; i++) {
+      let bookingPromise = getBooking(
+        hotelList[i],
+        "2023-04-01",
+        "2023-04-12",
+        "1"
+      );
 
-      filteredBookings = filterBookings(bookingResponses)
+      promiseArray.push(bookingPromise);
 
+      const bookingResponses = await Promise.all(promiseArray);
+
+      filteredBookings = filterBookings(bookingResponses);
     }
-    
-    console.log(filteredBookings)
+
+    console.log(filteredBookings);
     /*
       const parsedData = resultsInput;
 
@@ -61,9 +71,9 @@ export const hotelCrawl = async (city='Berlin',checkInDate='2023-04-01', checkOu
 
     */
 
-      return filteredBookings
+    return filteredBookings;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
-hotelCrawl();
