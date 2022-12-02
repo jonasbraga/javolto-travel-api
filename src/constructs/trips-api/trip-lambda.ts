@@ -23,7 +23,13 @@ export default class TripsLambda extends Construct {
       entry: "./src/lambda/index.ts",
       handler: "getTrips",
       timeout: Duration.minutes(2),
-      environment: props.environment,
+      environment: {
+        ...props.environment,
+        HOTEL_CRAWL_FUNCTION_NAME: props.crawlers.hotelCrawl.functionName,
+        TOURS_CRAWL_FUNCTION_NAME: props.crawlers.toursCrawl.functionName,
+        TRAVEL_CRAWL_FUNCTION_NAME: props.crawlers.travelCrawl.functionName,
+        VEHICLE_CRAWL_FUNCTION_NAME: props.crawlers.vehicleCrawl.functionName,
+      },
     });
 
     // Allowing lambda to call crawlers lambdas

@@ -33,7 +33,9 @@ export default class WebCrawlerLambdas extends Construct {
     const buildLambda = (
       id: string,
       handler: string,
-      cacheTableName: string
+      cacheTableName: string,
+      functionName: string,
+      needsChrome = false
     ) => {
       const cacheTable = new CacheTable(this, `${id}CacheTable`, {
         tableName: cacheTableName,
@@ -44,7 +46,8 @@ export default class WebCrawlerLambdas extends Construct {
           CACHE_TABLE_NAME: cacheTable.tableName,
         },
         region,
-        chromeLayer,
+        functionName,
+        ...(needsChrome ? { chromeLayer } : {}),
       });
       cacheTable.grantReadWriteData(lambda);
 
@@ -55,28 +58,32 @@ export default class WebCrawlerLambdas extends Construct {
     const travelCrawl = buildLambda(
       "TravelCrawl",
       "travelCrawlHandler",
-      "travel-cache-table"
+      "travel-cache-table",
+      "travel-function"
     );
 
     // Lambda for vehicle crawling
     const vehicleCrawl = buildLambda(
       "VehicleCrawl",
       "vehicleCrawlHandler",
-      "vehicle-cache-table"
+      "vehicle-cache-table",
+      "vehicle-function"
     );
 
     // Lambda for tours crawling
     const toursCrawl = buildLambda(
       "ToursCrawl",
       "toursCrawlHandler",
-      "tours-cache-table"
+      "tours-cache-table",
+      "tours-function"
     );
 
     // Lambda for hotel crawling
     const hotelCrawl = buildLambda(
       "HotelCrawl",
       "hotelCrawlHandler",
-      "hotel-cache-table"
+      "hotel-cache-table",
+      "hotel-function"
     );
 
     this.crawlers = {

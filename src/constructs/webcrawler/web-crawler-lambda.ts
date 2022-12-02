@@ -7,8 +7,9 @@ import ChromeLambdaLayer from "./chrome-lambda-layer";
 export interface WebCrawlerLambdaProps {
   handler: string;
   region: string;
-  chromeLayer: ChromeLambdaLayer;
+  chromeLayer?: ChromeLambdaLayer;
   environment?: { [key: string]: string };
+  functionName: string;
 }
 
 /**
@@ -19,14 +20,23 @@ export default class WebCrawlerLambda extends NodejsFunction {
     super(scope, id, {
       runtime: Runtime.NODEJS_16_X,
       entry: "./src/lambda/crawlers.ts",
-      layers: [props.chromeLayer],
       handler: props.handler,
+      functionName: props.functionName,
       timeout: Duration.minutes(5),
       memorySize: 1600,
       environment: props.environment,
-      bundling: {
-        externalModules: ["chrome-aws-lambda", "puppeteer", "puppeteer-core"],
-      },
+      ...(props?.chromeLayer
+        ? {
+            layers: [props?.chromeLayer],
+            bundling: {
+              externalModules: [
+                "chrome-aws-lambda",
+                "puppeteer",
+                "puppeteer-core",
+              ],
+            },
+          }
+        : {}),
     });
   }
 }
