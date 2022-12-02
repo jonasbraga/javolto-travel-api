@@ -65,3 +65,17 @@ export interface PageContent {
   title: string;
   htmlContent: string;
 }
+
+
+export interface Booking {
+  hotelName: string,
+  hotelBrand: string,
+  hotelDescription: string,
+  hotelStarRating: string,
+  hotelAddress: object,
+  hotelImageUrl: string,
+  roomName: string,
+  roomLongDescription: string,
+  roomPrice: string,
+  roomImageUrl: string
+}
