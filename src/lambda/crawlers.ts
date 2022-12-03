@@ -69,7 +69,9 @@ export const hotelCrawlHandler = async (event: any, context: any) => {
     );
   }
 
-  const { city, checkInDate, checkOutDate } = event.Payload;
+  const { city, checkInDate, checkOutDate } = event;
 
-  return await hotelCrawl(city, checkInDate, checkOutDate);
+  const hotelResponse = await hotelCrawl(city, checkInDate, checkOutDate);
+
+  return { hotels: hotelResponse };
 };

@@ -10,7 +10,8 @@ const {
 export const getTrips = async (event: any, context: any) => {
   console.log(event, context);
 
-  const { city, checkInDate, checkOutDate, rooms } = event.Payload;
+  const { city, checkInDate, checkOutDate, rooms } =
+    event.queryStringParameters;
 
   const lambda = new AWS.Lambda({
     region: "us-east-1", //change to your region
@@ -24,9 +25,10 @@ export const getTrips = async (event: any, context: any) => {
   ];
 
   const promises = crawlers.map((functionName) => {
-    lambda
+    return lambda
       .invoke({
         FunctionName: functionName!,
+        InvocationType: "RequestResponse",
         Payload: JSON.stringify({
           city,
           checkInDate,
@@ -39,5 +41,16 @@ export const getTrips = async (event: any, context: any) => {
 
   const result = await Promise.allSettled(promises);
 
-  return JSON.stringify(result);
+  console.log(result);
+
+  const resultFormated = result
+    .filter((response: { status: string }) => response.status === "fulfilled")
+    .map((response: any) => response.value.Payload)
+    .reduce((acc, curr) => {
+      return { ...acc, ...JSON.parse(curr) };
+    }, {});
+
+  console.log({ resultFormated });
+
+  return resultFormated;
 };
