@@ -1,4 +1,4 @@
-import * as AWS from "aws-sdk";
+import * as AWS from 'aws-sdk';
 
 export interface SearchParams {
   destination: string;
@@ -66,16 +66,29 @@ export interface PageContent {
   htmlContent: string;
 }
 
-
 export interface Booking {
-  hotelName: string,
-  hotelBrand: string,
-  hotelDescription: string,
-  hotelStarRating: string,
-  hotelAddress: object,
-  hotelImageUrl: string,
-  roomName: string,
-  roomLongDescription: string,
-  roomPrice: string,
-  roomImageUrl: string
+  hotelName: string;
+  hotelBrand: string;
+  hotelDescription: string;
+  hotelStarRating: string;
+  hotelAddress: object;
+  hotelImageUrl: string;
+  roomName: string;
+  roomLongDescription: string;
+  roomPrice: string;
+  currency: string;
+  roomImageUrl: string;
+}
+
+export interface Dictionary {
+  [index: string]: string;
+}
+
+export interface Flight {
+  airline: string;
+  origAirport: string;
+  destAirport: string;
+  price: number;
+  travelTime: string;
+  currency: string;
 }
