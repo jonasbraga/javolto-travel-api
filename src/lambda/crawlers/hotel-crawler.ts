@@ -20,7 +20,6 @@ export const hotelCrawl = async (search: SearchParams) => {
     checkInDate = "2023-04-01",
     checkOutDate = "2023-04-12",
   } = search;
-
   const searchString = createSearchString(search);
 
   // Search in the cache database for the data

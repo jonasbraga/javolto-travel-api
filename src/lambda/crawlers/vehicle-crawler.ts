@@ -1,16 +1,33 @@
-import * as AWS from "aws-sdk";
-import { extractPageContentAndUrls } from "../crawler/core";
-import { CrawlContext } from "../crawler/types";
-import { markPathAsVisited, queuePaths } from "../utils/contextTable";
-import chrome from "chrome-aws-lambda";
-import { Browser } from "puppeteer-core";
+import { initBrowser } from '../crawler/core';
+import { SearchParams, SearchWithUrl } from '../crawler/types';
+import { getCacheEntry, putCacheEntry } from '../utils/cacheTable';
+import { getVehicles } from './functions/fetchMethods';
+import { filterFlights, filterVehicles } from './functions/filterMethods';
+import { fixedCityCodes } from './constants/index';
 
-const s3 = new AWS.S3();
+export const vehicleCrawl = async (
+  pickupLocation = 'Berlin',
+  pickupDate = '2023-04-15',
+  returnDate = '2023-04-20',
+  pickupTime = '13:00:00',
+  returnTime = '13:00:00'
+) => {
+  try {
+    const pickupDateTime = pickupDate + ' ' + pickupTime;
+    const returnDateTime = returnDate + ' ' + returnTime;
 
-/**
- * This step is the main part of the webcrawler, responsible for extracting content from a single webpage, and adding
- * any newly discovered urls to visit to the queue.
- */
-export const vehicleCrawl = async (path: string) => {
-  return {};
+    const pickupCityCode = fixedCityCodes[pickupLocation];
+
+    const response = await getVehicles(
+      pickupCityCode,
+      pickupDateTime,
+      returnDateTime
+    );
+
+    const filteredVehicles = filterVehicles(response);
+
+    return filteredVehicles;
+  } catch (error) {
+    console.log(error);
+  }
 };

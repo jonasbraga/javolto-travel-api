@@ -90,3 +90,27 @@ export const getFlights = async (
   const data = await response.json();
   return data;
 };
+
+export const getVehicles = async (
+  location_pickup: string,
+  date_time_pickup: string,
+  date_time_return: string
+) => {
+  let params = {
+    location_pickup,
+    date_time_return,
+    date_time_pickup,
+    location_return: location_pickup,
+  };
+
+  const response = await fetch(
+    baseUrl + '/cars-rentals/search' + '?' + new URLSearchParams(params),
+    {
+      method: 'GET',
+      headers,
+    }
+  );
+
+  const data = await response.json();
+  return data;
+};
