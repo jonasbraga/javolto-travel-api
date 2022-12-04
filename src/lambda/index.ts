@@ -10,19 +10,14 @@ const {
 export const getTrips = async (event: any, context: any) => {
   console.log(event, context);
 
-  const { city, checkInDate, checkOutDate, rooms } =
+  const { city, checkInDate, checkOutDate, rooms, type } =
     event.queryStringParameters;
 
   const lambda = new AWS.Lambda({
     region: "us-east-1", //change to your region
   });
 
-  const crawlers = [
-    HOTEL_CRAWL_FUNCTION_NAME,
-    TRAVEL_CRAWL_FUNCTION_NAME,
-    VEHICLE_CRAWL_FUNCTION_NAME,
-    //TOURS_CRAWL_FUNCTION_NAME,
-  ];
+  const crawlers = getSelectedCrawlers(type);
 
   const promises = crawlers.map((functionName) => {
     return lambda
@@ -53,4 +48,13 @@ export const getTrips = async (event: any, context: any) => {
   console.log({ resultFormated });
 
   return resultFormated;
+};
+
+const getSelectedCrawlers = (type: string): string[] => {
+  const crawlers = [];
+  type.includes("hotels") && crawlers.push(HOTEL_CRAWL_FUNCTION_NAME!);
+  type.includes("travels") && crawlers.push(TRAVEL_CRAWL_FUNCTION_NAME!);
+  type.includes("vehicles") && crawlers.push(VEHICLE_CRAWL_FUNCTION_NAME!);
+  type.includes("tours") && crawlers.push(TOURS_CRAWL_FUNCTION_NAME!);
+  return crawlers;
 };
