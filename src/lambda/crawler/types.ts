@@ -92,3 +92,15 @@ export interface Flight {
   travelTime: string;
   currency: string;
 }
+
+export interface VehicleRent {
+  vehicleExample: string;
+  automatic: string;
+  airConditioning: string;
+  peopleCapacity: number;
+  bagCapacity: string;
+  exampleImage: string;
+  description: string;
+  price: number;
+  currency: string;
+}

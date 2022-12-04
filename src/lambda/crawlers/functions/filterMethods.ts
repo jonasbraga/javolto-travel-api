@@ -1,4 +1,4 @@
-import { Booking, Dictionary, Flight } from '../../crawler/types';
+import { Booking, Dictionary, Flight, VehicleRent } from '../../crawler/types';
 
 export const filterHotels = (hotelList: Array<any>) => {
   //Buscamos aqui hoteis com alguma vaga para filtrar melhor
@@ -73,4 +73,38 @@ export const filterFlights = (flights: any) => {
   });
 
   return flightsArray;
+};
+
+export const filterVehicles = (vehiclesReturn: any) => {
+  const vehicleRates = vehiclesReturn.vehicleRates;
+  const vehicleByPrice = vehiclesReturn.rateLists.allVehicleRatesByTotalPrice;
+
+  const vehicleArray: Array<VehicleRent> = [];
+
+  for (let index = 0; vehicleArray.length < 3; index++) {
+    let cheapestVehicle = vehicleRates[vehicleByPrice[index]];
+    let vehicleObj = <VehicleRent>{};
+
+    if (!String(vehicleByPrice[index]).includes('MCMR')) {
+      //Filtramos por preço e por veiculos que não seja mini
+      (vehicleObj.description = cheapestVehicle.vehicleInfo.description),
+        (vehicleObj.vehicleExample = cheapestVehicle.vehicleInfo.vehicleExample
+          ? cheapestVehicle.vehicleInfo.vehicleExample
+          : 'Unspecified');
+      vehicleObj.automatic = cheapestVehicle.vehicleInfo.automatic;
+      vehicleObj.airConditioning = cheapestVehicle.vehicleInfo.airConditioning;
+      vehicleObj.bagCapacity = cheapestVehicle.vehicleInfo.bagCapacity
+        ? cheapestVehicle.vehicleInfo.bagCapacity
+        : 'Unspecified';
+      vehicleObj.exampleImage =
+        cheapestVehicle.vehicleInfo.images['SIZE268X144'];
+      (vehicleObj.price = cheapestVehicle.rates.USD.totalAllInclusivePrice),
+        (vehicleObj.currency = 'USD');
+      vehicleObj.peopleCapacity = cheapestVehicle.vehicleInfo.peopleCapacity;
+
+      vehicleArray.push(vehicleObj);
+    }
+  }
+
+  return vehicleArray;
 };
