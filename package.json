@@ -14,7 +14,7 @@
     "test": "jest",
     "cdk": "cdk",
     "cdk:destroy": "cdk --profile jbAccount destroy '*' --require-approval never",
-    "precdk:deploy": "npm ci && npm run build",
+    "precdk:deploy": "npm i && npm run build",
     "cdk:deploy": "cdk --profile jbAccount deploy '*' --require-approval never"
   },
   "devDependencies": {
@@ -24,7 +24,7 @@
     "@types/node-fetch": "^2.6.2",
     "@types/uuid": "^8.3.2",
     "aws-cdk": "2.29.1",
-    "esbuild": "0",
+    "esbuild": "^0.15.17",
     "jest": "^28.1.1",
     "node-fetch": "^2.6.7",
     "puppeteer": "10.1.0",
