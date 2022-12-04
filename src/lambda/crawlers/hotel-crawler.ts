@@ -24,7 +24,7 @@ export const hotelCrawl = async (search: SearchParams) => {
 
   // Search in the cache database for the data
   const cachedData = await getCacheEntry(searchString);
-  console.log({ search, cachedData });
+
   // If it's cached, return, otherwise scrap the data
   if (cachedData) {
     return cachedData;

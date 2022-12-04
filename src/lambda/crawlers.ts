@@ -47,9 +47,17 @@ export const vehicleCrawlHandler = async (event: any, context: any) => {
     );
   }
 
-  const { crawlContext } = event.Payload;
+  const { city, checkInDate, checkOutDate } = event;
 
-  return await vehicleCrawl(crawlContext);
+  const input: SearchParams = {
+    city,
+    checkInDate,
+    checkOutDate,
+  };
+
+  const hotelResponse = await vehicleCrawl(input);
+
+  return hotelResponse;
 };
 
 /**
