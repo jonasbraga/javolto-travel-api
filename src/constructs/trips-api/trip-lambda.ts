@@ -1,6 +1,10 @@
 import { Construct } from "constructs";
-import { Duration } from "aws-cdk-lib";
-import { Runtime } from "aws-cdk-lib/aws-lambda";
+import { CfnResource, Duration } from "aws-cdk-lib";
+import {
+  FunctionUrlAuthType,
+  HttpMethod,
+  Runtime,
+} from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { WebCrawlers } from "../webcrawler/web-crawler-lambdas";
@@ -23,6 +27,7 @@ export default class TripsLambda extends Construct {
       entry: "./src/lambda/index.ts",
       handler: "getTrips",
       timeout: Duration.minutes(2),
+      functionName: "trips-lambda",
       environment: {
         ...props.environment,
         HOTEL_CRAWL_FUNCTION_NAME: props.crawlers.hotelCrawl.functionName,
@@ -45,6 +50,24 @@ export default class TripsLambda extends Construct {
         ],
       })
     );
+
+    lambdaFunction.addFunctionUrl({
+      cors: {
+        allowedMethods: [HttpMethod.GET],
+        allowedOrigins: ["*"],
+      },
+      authType: FunctionUrlAuthType.NONE,
+    });
+
+    const lambdaPermission = new CfnResource(this, "lambdaPermission", {
+      type: "AWS::Lambda::Permission",
+      properties: {
+        Action: "lambda:InvokeFunctionUrl",
+        FunctionName: lambdaFunction.functionArn,
+        Principal: "*",
+        FunctionUrlAuthType: "NONE",
+      },
+    });
 
     this.function = lambdaFunction;
   }
