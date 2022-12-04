@@ -4,9 +4,9 @@ import { getHotels, getBooking } from "./functions/fetchMethods";
 import { filterHotels, filterBookings } from "./functions/filterMethods";
 import { fixedCityIDs } from "./constants/index";
 const createSearchString = (searchInput: SearchParams) => {
-  const sanitizedDestination = searchInput.destination.trim().toLowerCase();
-  const sanitizedStartDate = searchInput.startDate;
-  const sanitizedEndDate = searchInput.endDate;
+  const sanitizedDestination = searchInput.city.trim().toLowerCase();
+  const sanitizedStartDate = searchInput.checkInDate.trim().toLowerCase();
+  const sanitizedEndDate = searchInput.checkOutDate.trim().toLowerCase();
 
   return `${sanitizedDestination}-${sanitizedStartDate}-${sanitizedEndDate}`;
 };
@@ -14,21 +14,22 @@ const createSearchString = (searchInput: SearchParams) => {
 /**
  * Continue execution of the crawler in another step function execution
  */
-export const hotelCrawl = async (
-  city = "Berlin",
-  checkInDate = "2023-04-01",
-  checkOutDate = "2023-04-12"
-) => {
-  /*
-  const searchString = createSearchString(search);
-  // Search in the cache database for the data
-  const cachedData = getCacheEntry(searchString);
+export const hotelCrawl = async (search: SearchParams) => {
+  const {
+    city = "Berlin",
+    checkInDate = "2023-04-01",
+    checkOutDate = "2023-04-12",
+  } = search;
 
+  const searchString = createSearchString(search);
+
+  // Search in the cache database for the data
+  const cachedData = await getCacheEntry(searchString);
+  console.log({ search, cachedData });
   // If it's cached, return, otherwise scrap the data
   if (cachedData) {
     return cachedData;
   }
-  */
 
   try {
     const cityID = fixedCityIDs[city];
@@ -60,18 +61,14 @@ export const hotelCrawl = async (
     }
 
     console.log(filteredBookings);
-    /*
-      const parsedData = resultsInput;
 
-      // Store in the database, with search as key and ttl of 3h
+    const response = {
+      hotels: filteredBookings,
+    };
 
-      await putCacheEntry(searchString, parsedData);
+    await putCacheEntry(searchString, response);
 
-      return parsedData;
-
-    */
-
-    return filteredBookings;
+    return response;
   } catch (error) {
     console.log(error);
     return error;

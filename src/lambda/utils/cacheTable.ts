@@ -4,21 +4,6 @@ import crypto from "node:crypto";
 const { CACHE_TABLE_NAME } = process.env;
 const ddb = new AWS.DynamoDB.DocumentClient();
 
-/*
-const createKeyFromSearch = (searchInput: SearchParams) => {
-  const sanitizedDestination = searchInput.destination.trim().toLowerCase();
-  const sanitizedStartDate = searchInput.startDate;
-  const sanitizedEndDate = searchInput.endDate;
-  const sanitizedRooms = searchInput.rooms;
-
-  const searchString = `${sanitizedDestination}-${sanitizedStartDate}-${sanitizedEndDate}-${sanitizedRooms}`;
-
-  const hash = crypto.createHash("md5").update(searchString).digest("hex");
-
-  return { hash, searchString };
-};
- */
-
 /**
  * Read an entry from the history table
  * @param crawlId id of the crawl
@@ -36,11 +21,11 @@ export const getCacheEntry = async (searchString: string) => {
     })
     .promise();
 
-  return data.Item;
+  return data.Item?.data;
 };
 
 /**
- * Adds a new entry to the history table
+ * Store in the database, with search as key and ttl of 3h
  * @param historyEntry the entry to add
  */
 export const putCacheEntry = async (searchString: string, entry: object) => {
@@ -49,7 +34,7 @@ export const putCacheEntry = async (searchString: string, entry: object) => {
     .put({
       TableName: CACHE_TABLE_NAME!,
       Item: {
-        ...entry,
+        data: entry,
         crawlId: hash,
         ttl: CACHE_EXPIRATION.ttl,
       },

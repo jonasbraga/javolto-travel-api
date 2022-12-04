@@ -18,12 +18,21 @@ export const travelCrawlHandler = async (event: any, context: any) => {
     );
   }
 
-  const input: SearchParams = event.Payload;
+  const {
+    city = "Berlin",
+    checkInDate = "2023-04-01",
+    checkOutDate = "2023-04-20",
+  } = event;
 
-  return await travelCrawl({
-    ...input,
-    url: "https://www.carroaluguel.com/",
-  });
+  const input: SearchParams = {
+    city,
+    checkInDate,
+    checkOutDate,
+  };
+
+  const travelResponse = await travelCrawl(input);
+
+  return travelResponse;
 };
 
 /**
@@ -71,7 +80,13 @@ export const hotelCrawlHandler = async (event: any, context: any) => {
 
   const { city, checkInDate, checkOutDate } = event;
 
-  const hotelResponse = await hotelCrawl(city, checkInDate, checkOutDate);
+  const input: SearchParams = {
+    city,
+    checkInDate,
+    checkOutDate,
+  };
 
-  return { hotels: hotelResponse };
+  const hotelResponse = await hotelCrawl(input);
+
+  return hotelResponse;
 };

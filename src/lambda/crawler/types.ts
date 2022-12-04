@@ -1,10 +1,10 @@
-import * as AWS from 'aws-sdk';
+import * as AWS from "aws-sdk";
 
 export interface SearchParams {
-  destination: string;
-  startDate: number;
-  endDate: number;
-  rooms: number;
+  city: string;
+  checkInDate: string;
+  checkOutDate: string;
+  rooms?: number;
 }
 
 export interface SearchWithUrl extends SearchParams {

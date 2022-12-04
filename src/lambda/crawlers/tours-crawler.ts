@@ -3,9 +3,9 @@ import { SearchParams, SearchWithUrl } from "../crawler/types";
 import { getCacheEntry, putCacheEntry } from "../utils/cacheTable";
 
 const createSearchString = (searchInput: SearchParams) => {
-  const sanitizedDestination = searchInput.destination.trim().toLowerCase();
-  const sanitizedStartDate = searchInput.startDate;
-  const sanitizedEndDate = searchInput.endDate;
+  const sanitizedDestination = searchInput.city.trim().toLowerCase();
+  const sanitizedStartDate = searchInput.checkInDate.trim().toLowerCase();
+  const sanitizedEndDate = searchInput.checkOutDate.trim().toLowerCase();
 
   return `${sanitizedDestination}-${sanitizedStartDate}-${sanitizedEndDate}`;
 };
@@ -32,12 +32,12 @@ export const toursCrawl = async (search: SearchWithUrl) => {
   });
 
   // Search for the location
-  await page.type("#destinationInput", search.destination);
+  await page.type("#destinationInput", search.city);
   await page.keyboard.press("ArrowDown");
   await page.keyboard.press("Enter");
 
-  await page.type("#startDate", search.startDate.toString());
-  await page.type("#endDate", search.endDate.toString());
+  await page.type("#startDate", search.checkInDate.toString());
+  await page.type("#endDate", search.checkOutDate.toString());
 
   const searchButton = "#myBtn";
 

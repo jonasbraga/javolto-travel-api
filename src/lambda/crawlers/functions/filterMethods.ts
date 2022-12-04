@@ -1,4 +1,4 @@
-import { Booking, Dictionary, Flight } from '../../crawler/types';
+import { Booking, Dictionary, Flight } from "../../crawler/types";
 
 export const filterHotels = (hotelList: Array<any>) => {
   //Buscamos aqui hoteis com alguma vaga para filtrar melhor

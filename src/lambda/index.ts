@@ -19,8 +19,8 @@ export const getTrips = async (event: any, context: any) => {
 
   const crawlers = [
     HOTEL_CRAWL_FUNCTION_NAME,
+    TRAVEL_CRAWL_FUNCTION_NAME,
     //TOURS_CRAWL_FUNCTION_NAME,
-    //TRAVEL_CRAWL_FUNCTION_NAME,
     //VEHICLE_CRAWL_FUNCTION_NAME,
   ];
 
