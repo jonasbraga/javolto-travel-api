@@ -8,8 +8,9 @@ const createSearchString = (searchInput: SearchParams) => {
   const sanitizedDestination = searchInput.city.trim().toLowerCase();
   const sanitizedStartDate = searchInput.checkInDate.trim().toLowerCase();
   const sanitizedEndDate = searchInput.checkOutDate.trim().toLowerCase();
+  const sanitizedPeople = searchInput.people?.toString();
 
-  return `${sanitizedDestination}-${sanitizedStartDate}-${sanitizedEndDate}`;
+  return `${sanitizedDestination}-${sanitizedStartDate}-${sanitizedEndDate}-${sanitizedPeople}`;
 };
 
 export const travelCrawl = async (search: SearchParams) => {
@@ -17,9 +18,9 @@ export const travelCrawl = async (search: SearchParams) => {
     city = "Berlin",
     checkInDate = "2023-04-01",
     checkOutDate = "2023-04-20",
+    people = 1,
   } = search;
   const DEPARTURE_CITY = "São Paulo";
-  const PASSENGER_NUMBER = "1";
 
   const searchString = createSearchString(search);
   // Search in the cache database for the data
@@ -36,7 +37,7 @@ export const travelCrawl = async (search: SearchParams) => {
     const responseApi = await getFlights(
       departureCityCode,
       arrivalCityCode,
-      PASSENGER_NUMBER,
+      people,
       checkInDate,
       checkOutDate
     );

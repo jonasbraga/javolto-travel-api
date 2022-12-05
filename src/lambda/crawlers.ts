@@ -22,12 +22,14 @@ export const travelCrawlHandler = async (event: any, context: any) => {
     city = "Berlin",
     checkInDate = "2023-04-01",
     checkOutDate = "2023-04-20",
+    people = "1",
   } = event;
 
   const input: SearchParams = {
     city,
     checkInDate,
     checkOutDate,
+    people,
   };
 
   const travelResponse = await travelCrawl(input);

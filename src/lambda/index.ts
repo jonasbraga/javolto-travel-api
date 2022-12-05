@@ -10,7 +10,7 @@ const {
 export const getTrips = async (event: any, context: any) => {
   console.log(event, context);
 
-  const { city, checkInDate, checkOutDate, rooms, type } =
+  const { city, checkInDate, checkOutDate, people, type } =
     event.queryStringParameters;
 
   const lambda = new AWS.Lambda({
@@ -28,7 +28,7 @@ export const getTrips = async (event: any, context: any) => {
           city,
           checkInDate,
           checkOutDate,
-          rooms,
+          people,
         }),
       })
       .promise();

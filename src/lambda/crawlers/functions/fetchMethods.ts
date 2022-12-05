@@ -1,11 +1,11 @@
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
-const baseUrl = 'https://priceline-com-provider.p.rapidapi.com/v1';
+const baseUrl = "https://priceline-com-provider.p.rapidapi.com/v1";
 
 const headers = {
-  'Content-Type': 'application/json',
-  'X-RapidAPI-Key': '075d9986b1mshf7fe78bb29d44a3p173798jsn90f9820584bd',
-  'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com',
+  "Content-Type": "application/json",
+  "X-RapidAPI-Key": "075d9986b1mshf7fe78bb29d44a3p173798jsn90f9820584bd",
+  "X-RapidAPI-Host": "priceline-com-provider.p.rapidapi.com",
 };
 
 export const getHotels = async (
@@ -14,16 +14,16 @@ export const getHotels = async (
   date_checkout: string
 ) => {
   let params = {
-    sort_order: 'PRICE',
+    sort_order: "PRICE",
     location_id,
     date_checkout,
     date_checkin,
-    star_rating_ids: '3.0,3.5,4.0,4.5,5.0',
+    star_rating_ids: "3.0,3.5,4.0,4.5,5.0",
   };
   const response = await fetch(
-    baseUrl + '/hotels/search' + '?' + new URLSearchParams(params),
+    baseUrl + "/hotels/search" + "?" + new URLSearchParams(params),
     {
-      method: 'GET',
+      method: "GET",
       headers,
     }
   );
@@ -46,9 +46,9 @@ export const getBooking = async (
   };
 
   const response = await fetch(
-    baseUrl + '/hotels/booking-details' + '?' + new URLSearchParams(params),
+    baseUrl + "/hotels/booking-details" + "?" + new URLSearchParams(params),
     {
-      method: 'GET',
+      method: "GET",
       headers,
     }
   );
@@ -60,29 +60,29 @@ export const getBooking = async (
 export const getFlights = async (
   location_departure: string,
   location_arrival: string,
-  number_of_passengers: string,
+  number_of_passengers: number,
   date_departure: string,
   date_departure_return: string
 ) => {
   let params = {
-    itinerary_type: 'ROUND_TRIP',
-    class_type: 'ECO',
+    itinerary_type: "ROUND_TRIP",
+    class_type: "ECO",
     location_arrival,
     date_departure,
     location_departure,
-    sort_order: 'PRICE',
-    number_of_stops: '1',
-    price_max: '20000',
-    number_of_passengers,
-    duration_max: '2051',
-    price_min: '100',
+    sort_order: "PRICE",
+    number_of_stops: "1",
+    price_max: "20000",
+    number_of_passengers: number_of_passengers.toString(),
+    duration_max: "2051",
+    price_min: "100",
     date_departure_return,
   };
 
   const response = await fetch(
-    baseUrl + '/flights/search' + '?' + new URLSearchParams(params),
+    baseUrl + "/flights/search" + "?" + new URLSearchParams(params),
     {
-      method: 'GET',
+      method: "GET",
       headers,
     }
   );
@@ -104,9 +104,9 @@ export const getVehicles = async (
   };
 
   const response = await fetch(
-    baseUrl + '/cars-rentals/search' + '?' + new URLSearchParams(params),
+    baseUrl + "/cars-rentals/search" + "?" + new URLSearchParams(params),
     {
-      method: 'GET',
+      method: "GET",
       headers,
     }
   );

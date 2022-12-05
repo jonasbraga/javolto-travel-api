@@ -4,7 +4,7 @@ export interface SearchParams {
   city: string;
   checkInDate: string;
   checkOutDate: string;
-  rooms?: number;
+  people?: number;
 }
 
 export interface SearchWithUrl extends SearchParams {
