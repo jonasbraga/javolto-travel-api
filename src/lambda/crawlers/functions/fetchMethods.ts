@@ -4,7 +4,7 @@ const baseUrl = "https://priceline-com-provider.p.rapidapi.com/v1";
 
 const headers = {
   "Content-Type": "application/json",
-  "X-RapidAPI-Key": "075d9986b1mshf7fe78bb29d44a3p173798jsn90f9820584bd",
+  "X-RapidAPI-Key": "94831299bemshdd6288f409a200ep13767bjsn5a221271e1fd",
   "X-RapidAPI-Host": "priceline-com-provider.p.rapidapi.com",
 };
 
